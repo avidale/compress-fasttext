@@ -1,0 +1,4 @@
+gensim
+numpy
+pqkmeans
+scikit-learn
