@@ -22,7 +22,7 @@ The recommended approach is combination of feature selection and quantization
 (the function `prune_ft_freq` with `pq=True`).
 
 If you just need a tiny fastText model for Russian, you can download 
-[this](https://github.com/avidale/compress-fasttext/releases/download/untagged-c33a6e305d338acf0db8/ft_freqprune_100K_20K_pq_100.bin)
+[this](https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin)
 28-megabyte model. It's a compressed version of 
 [ruscorpora_none_fasttextskipgram_300_2_2019](http://vectors.nlpl.eu/repository/20/181.zip) model
 from [RusVectores](https://rusvectores.org/ru/models/).
