@@ -1,4 +1,4 @@
-gensim
+gensim>=3.8.1
 numpy
 pqkmeans
 scikit-learn
