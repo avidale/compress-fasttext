@@ -1,8 +1,12 @@
 # Compress-fastText
 This Python 3 package allows to compress fastText models (from the `gensim` package) by orders of magnitude, 
-without seriously affecting their quality.
+without seriously affecting their quality. It can be installed with `pip`:
+```commandline
+pip install compress-fasttext
+```
 
-Use it like this:
+You can use this package to compress your own fastText model (or one downloaded e.g. from 
+[RusVectores](https://rusvectores.org/ru/models/)):
 
 ```python
 import gensim
@@ -18,8 +22,7 @@ Different compression methods include:
 - optimization of feature hashing (`prune_ft`)
 - feature selection (`prune_ft_freq`)
 
-The recommended approach is combination of feature selection and quantization 
-(the function `prune_ft_freq` with `pq=True`).
+The recommended approach is combination of feature selection and quantization (`prune_ft_freq` with `pq=True`).
 
 If you just need a tiny fastText model for Russian, you can download 
 [this](https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin)
@@ -27,6 +30,16 @@ If you just need a tiny fastText model for Russian, you can download
 [ruscorpora_none_fasttextskipgram_300_2_2019](http://vectors.nlpl.eu/repository/20/181.zip) model
 from [RusVectores](https://rusvectores.org/ru/models/).
 
+If `compress-fasttext` is already installed, you can download and use this tiny model
+```python
+import gensim
+small_model = gensim.models.fasttext.FastTextKeyedVectors.load(
+    'https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin'
+)
+print(small_model['спасибо'])
+```
+
+### Notes
 This code is heavily based on the [navec](https://github.com/natasha/navec) package by Alexander Kukushkin and 
 [the blogpost](https://medium.com/@vasnetsov93/shrinking-fasttext-embeddings-so-that-it-fits-google-colab-cd59ab75959e) 
 by Andrey Vasnetsov about shrinking fastText embeddings.
