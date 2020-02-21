@@ -1,10 +1,14 @@
 # Compress-fastText
-This Python 3 package allows to compress fastText models (from the `gensim` package) by orders of magnitude, 
+This Python 3 package allows to compress fastText word embedding models 
+(from the `gensim` package) by orders of magnitude, 
 without seriously affecting their quality. It can be installed with `pip`:
 ```commandline
 pip install compress-fasttext
 ```
+This [blogpost](https://habr.com/ru/post/489474) (in Russian) gives more details about the motivation and 
+methods for compressing fastText models.
 
+### Model compression
 You can use this package to compress your own fastText model (or one downloaded e.g. from 
 [RusVectores](https://rusvectores.org/ru/models/)):
 
@@ -24,6 +28,7 @@ Different compression methods include:
 
 The recommended approach is combination of feature selection and quantization (`prune_ft_freq` with `pq=True`).
 
+### Model usage
 If you just need a tiny fastText model for Russian, you can download 
 [this](https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin)
 28-megabyte model. It's a compressed version of 
