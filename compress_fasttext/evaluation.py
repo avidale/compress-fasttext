@@ -13,7 +13,7 @@ def vocabulary_from_files(path):
         with open(path + fn, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 for w in re.sub('[^а-яёa-z]', ' ', line.lower()).split():
-                    w2 = w.strip()
+                    w2 = w.strip().replace('ё', 'е')
                     if len(w2) > 1:  # one-letter words are not included in the model I compress, so I skip them
                         wc[w2] += 1
     return wc

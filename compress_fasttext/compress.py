@@ -63,14 +63,16 @@ def prune_ft_freq(ft, new_vocab_size=20_000, new_ngrams_size=100_000, fp16=True,
     id_and_count = sorted(old_hash_count.items(), key=lambda x: x[1], reverse=True)
     ids = [x[0] for x in id_and_count[:new_ngrams_size]]
     top_ngram_vecs = ft.vectors_ngrams[ids]
-    if pq:
+    if pq and len(top_ngram_vecs) > 0:
         top_ngram_vecs = quantize(top_ngram_vecs, qdim=qdim, centroids=centroids)
     elif fp16:
         top_ngram_vecs = top_ngram_vecs.astype(np.float16)
     rsm = RowSparseMatrix.from_small(ids, top_ngram_vecs, nrows=ft.vectors_ngrams.shape[0])
 
     top_voc, top_vec = prune_vocab(ft, new_vocab_size=new_vocab_size)
-    if pq:
+    if pq and len(top_vec) > 0:
         top_vec = quantize(top_vec, qdim=qdim, centroids=centroids)
+    elif fp16:
+        top_vec = top_vec.astype(np.float16)
 
     return make_new_fasttext_model(ft, top_vec, rsm, new_vocab=top_voc)
