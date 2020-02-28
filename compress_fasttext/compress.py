@@ -66,11 +66,12 @@ def prune_ft_freq(
         pq=True,
         qdim=100,
         centroids=255,
-        prune_by_norm=True):
+        prune_by_norm=True,
+        norm_power=1):
 
     if prune_by_norm:
         ngram_norms = np.linalg.norm(ft.vectors_ngrams, axis=-1)
-        scorer = lambda id, count: count * ngram_norms[id]
+        scorer = lambda id, count: count * (ngram_norms[id] ** norm_power)
     else:
         scorer = lambda id, count: count
 
