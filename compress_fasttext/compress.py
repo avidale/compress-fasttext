@@ -58,9 +58,25 @@ def prune_ft(ft, new_vocab_size=1_000, new_ngrams_size=20_000, fp16=True):
     )
 
 
-def prune_ft_freq(ft, new_vocab_size=20_000, new_ngrams_size=100_000, fp16=True, pq=True, qdim=100, centroids=255):
+def prune_ft_freq(
+        ft,
+        new_vocab_size=20_000,
+        new_ngrams_size=100_000,
+        fp16=True,
+        pq=True,
+        qdim=100,
+        centroids=255,
+        prune_by_norm=True,
+        norm_power=1):
+
+    if prune_by_norm:
+        ngram_norms = np.linalg.norm(ft.vectors_ngrams, axis=-1)
+        scorer = lambda id, count: count * (ngram_norms[id] ** norm_power)
+    else:
+        scorer = lambda id, count: count
+
     new_to_old_buckets, old_hash_count = count_buckets(ft, list(ft.vocab.keys()), new_ngrams_size=new_ngrams_size)
-    id_and_count = sorted(old_hash_count.items(), key=lambda x: x[1], reverse=True)
+    id_and_count = sorted(old_hash_count.items(), key=lambda x: scorer(*x), reverse=True)
     ids = [x[0] for x in id_and_count[:new_ngrams_size]]
     top_ngram_vecs = ft.vectors_ngrams[ids]
     if pq and len(top_ngram_vecs) > 0:
