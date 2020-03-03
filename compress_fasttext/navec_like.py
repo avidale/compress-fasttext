@@ -75,6 +75,24 @@ class PQ(Record):
         parts = self.codes[self.qdims, indexes]
         return parts.reshape(self.dim)
 
+    def __add__(self, other):
+        return self.unpack() + other
+
+    def __sub__(self, other):
+        return self.unpack() - other
+
+    def __mul__(self, other):
+        return self.unpack() * other
+
+    def __truediv__(self, other):
+        return self.unpack() / other
+
+    def __pow__(self, other):
+        return self.unpack() ** other
+
+    def sqrt(self):
+        return self ** 0.5
+
     def unpack(self):
         parts = self.codes[self.qdims, self.indexes]
         return parts.reshape(self.vectors, self.dim)

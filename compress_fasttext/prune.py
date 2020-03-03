@@ -74,6 +74,30 @@ class RowSparseMatrix:
             return np.zeros(self.ncols, dtype=self.dtype)
         return self.compressed[self.mapping[item]]
 
+    def unpack(self):
+        result = np.zeros(shape=self.shape, dtype=self.dtype)
+        for old_index, new_index in self.mapping.items():
+            result[old_index] = self[new_index].astype(self.dtype)
+        return result
+
+    def __add__(self, other):
+        return self.unpack() + other
+
+    def __sub__(self, other):
+        return self.unpack() - other
+
+    def __mul__(self, other):
+        return self.unpack() * other
+
+    def __truediv__(self, other):
+        return self.unpack() / other
+
+    def __pow__(self, other):
+        return self.unpack() ** other
+
+    def sqrt(self):
+        return self ** 0.5
+
     @property
     def shape(self):
         return self.nrows, self.ncols
