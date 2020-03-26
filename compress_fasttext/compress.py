@@ -10,7 +10,7 @@ from .prune import prune_ngrams, prune_vocab, count_buckets, RowSparseMatrix
 logger = logging.getLogger(__name__)
 
 
-def make_new_fasttext_model(ft, new_vectors, new_vectors_ngrams, new_vocab=None):
+def make_new_fasttext_model(ft, new_vectors, new_vectors_ngrams, new_vocab=None, add_index2entity=True):
     new_ft = gensim.models.keyedvectors.FastTextKeyedVectors(
         vector_size=ft.vector_size,
         min_n=ft.min_n,
@@ -25,6 +25,9 @@ def make_new_fasttext_model(ft, new_vectors, new_vectors_ngrams, new_vocab=None)
     else:
         new_ft.vocab = new_vocab
     new_ft.vectors_ngrams = new_vectors_ngrams
+    if add_index2entity:  # this is required for methods such as most_similar()
+        inverse_index = {value.index: key for key, value in new_ft.vocab.items()}
+        new_ft.index2entity = [inverse_index[i] for i in range(len(new_ft.vocab))]
     return new_ft
 
 
@@ -81,6 +84,7 @@ def prune_ft_freq(
 
     logger.info('quantizing ngrams...')
     new_to_old_buckets, old_hash_count = count_buckets(ft, list(ft.vocab.keys()), new_ngrams_size=new_ngrams_size)
+    logger.info('old ngrams in use: {}'.format(len(old_hash_count)))
     id_and_count = sorted(old_hash_count.items(), key=lambda x: scorer(*x), reverse=True)
     ids = [x[0] for x in id_and_count[:new_ngrams_size]]
     top_ngram_vecs = ft.vectors_ngrams[ids]
