@@ -5,7 +5,7 @@ import numpy as np
 from .quantization import quantize
 from .decomposition import DecomposedMatrix
 from .prune import prune_ngrams, prune_vocab, count_buckets, RowSparseMatrix
-from .keyed_vectors import CompressedFastTextKeyedVectors
+from .models import CompressedFastTextKeyedVectors
 
 
 logger = logging.getLogger(__name__)

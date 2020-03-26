@@ -37,12 +37,14 @@ from [RusVectores](https://rusvectores.org/ru/models/).
 
 If `compress-fasttext` is already installed, you can download and use this tiny model
 ```python
-import gensim
-small_model = gensim.models.fasttext.FastTextKeyedVectors.load(
+import compress_fasttext
+small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(
     'https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin'
 )
 print(small_model['спасибо'])
 ```
+The class `CompressedFastTextKeyedVectors` inherits from `gensim.models.keyed_vectors.FastTextKeyedVectors`, 
+but makes a few additional optimizations.
 
 ### Notes
 This code is heavily based on the [navec](https://github.com/natasha/navec) package by Alexander Kukushkin and 
