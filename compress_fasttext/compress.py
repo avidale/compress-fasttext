@@ -5,7 +5,6 @@ import numpy as np
 from .quantization import quantize
 from .decomposition import DecomposedMatrix
 from .prune import prune_ngrams, prune_vocab, count_buckets, RowSparseMatrix
-from .models import CompressedFastTextKeyedVectors
 
 
 logger = logging.getLogger(__name__)
@@ -17,9 +16,9 @@ def make_new_fasttext_model(
         new_vectors_ngrams,
         new_vocab=None,
         add_index2entity=True,
-        use_new_class=False,
+        cls=None,
 ):
-    cls = CompressedFastTextKeyedVectors if use_new_class else gensim.models.keyedvectors.FastTextKeyedVectors
+    cls = cls or gensim.models.keyedvectors.FastTextKeyedVectors
     new_ft = cls(
         vector_size=ft.vector_size,
         min_n=ft.min_n,

@@ -7,6 +7,9 @@ from gensim.models.utils_any2vec import ft_ngram_hashes
 from compress_fasttext.compress import make_new_fasttext_model
 
 
+EPSILON = 1e-24
+
+
 class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
     """ This class extends FastTextKeyedVectors by fixing several issues:
         - index2word of a freshly created model is initialized from its vocab
@@ -25,7 +28,7 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
             new_vectors=loaded.vectors,
             new_vectors_ngrams=loaded.vectors_ngrams,
             new_vocab=loaded.vocab,
-            use_new_class=True,
+            cls=cls,
         )
 
     def update_index2word(self):
@@ -67,7 +70,7 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
                 word_vec += self.vectors_ngrams[nh]
             result = word_vec / len(ngram_hashes)
             if use_norm:
-                result /= np.sqrt(sum(result ** 2))
+                result /= np.sqrt(max(sum(result ** 2), EPSILON))
             return result
 
     def init_sims(self, replace=False):
