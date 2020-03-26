@@ -5,13 +5,22 @@ import numpy as np
 from .quantization import quantize
 from .decomposition import DecomposedMatrix
 from .prune import prune_ngrams, prune_vocab, count_buckets, RowSparseMatrix
+from .keyed_vectors import CompressedFastTextKeyedVectors
 
 
 logger = logging.getLogger(__name__)
 
 
-def make_new_fasttext_model(ft, new_vectors, new_vectors_ngrams, new_vocab=None, add_index2entity=True):
-    new_ft = gensim.models.keyedvectors.FastTextKeyedVectors(
+def make_new_fasttext_model(
+        ft,
+        new_vectors,
+        new_vectors_ngrams,
+        new_vocab=None,
+        add_index2entity=True,
+        use_new_class=False,
+):
+    cls = CompressedFastTextKeyedVectors if use_new_class else gensim.models.keyedvectors.FastTextKeyedVectors
+    new_ft = cls(
         vector_size=ft.vector_size,
         min_n=ft.min_n,
         max_n=ft.max_n,
@@ -27,7 +36,7 @@ def make_new_fasttext_model(ft, new_vectors, new_vectors_ngrams, new_vocab=None,
     new_ft.vectors_ngrams = new_vectors_ngrams
     if add_index2entity:  # this is required for methods such as most_similar()
         inverse_index = {value.index: key for key, value in new_ft.vocab.items()}
-        new_ft.index2entity = [inverse_index[i] for i in range(len(new_ft.vocab))]
+        new_ft.index2entity = [inverse_index.get(i) for i in range(len(new_ft.vocab))]
     return new_ft
 
 
