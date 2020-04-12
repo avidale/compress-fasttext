@@ -3,8 +3,15 @@ This Python 3 package allows to compress fastText word embedding models
 (from the `gensim` package) by orders of magnitude, 
 without seriously affecting their quality. It can be installed with `pip`:
 ```commandline
+pip install compress-fasttext[full]
+```
+If you are not going to perform matrix decomposition or quantization,
+ you can install a variety with less dependencies: 
+```commandline
 pip install compress-fasttext
 ```
+
+
 This [blogpost](https://habr.com/ru/post/489474) (in Russian) gives more details about the motivation and 
 methods for compressing fastText models.
 

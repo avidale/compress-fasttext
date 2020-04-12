@@ -82,5 +82,6 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
             If True - forget the original vectors and only keep the normalized ones = saves lots of memory!
         """
         super(FastTextKeyedVectors, self).init_sims(replace)
+        # todo: make self.vectors_norm a view over self.vectors, to avoid decompression
         # do NOT calculate vectors_ngrams_norm; using them is a mistake
         self.vectors_ngrams_norm = None

@@ -1,11 +1,17 @@
 import logging
 import numpy as np
-import pqkmeans
+
+try:
+    import pqkmeans
+except ImportError:
+    pqkmeans = None
 
 from .navec_like import PQ
 
 
 def quantize(matrix, qdim, centroids, sample=None, iterations=5, verbose=False):
+    if not pqkmeans:
+        raise ImportError('You need to install the `pqkmeans` package to perform quantization')
     encoder = pqkmeans.encoder.PQEncoder(
         iteration=iterations,
         num_subdim=qdim,
