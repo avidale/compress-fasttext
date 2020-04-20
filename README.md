@@ -19,10 +19,20 @@ methods for compressing fastText models.
 You can use this package to compress your own fastText model (or one downloaded e.g. from 
 [RusVectores](https://rusvectores.org/ru/models/)):
 
+Compress a model in Gensim format:
 ```python
 import gensim
 import compress_fasttext
 big_model = gensim.models.fasttext.FastTextKeyedVectors.load('path-to-original-model')
+small_model = compress_fasttext.prune_ft_freq(big_model, pq=True)
+small_model.save('path-to-new-model')
+```
+
+Import a model in Facebook original format and compress it:
+```python
+from gensim.models.fasttext import load_facebook_model
+import compress_fasttext
+big_model = load_facebook_model('path-to-original-model').wv
 small_model = compress_fasttext.prune_ft_freq(big_model, pq=True)
 small_model.save('path-to-new-model')
 ```
