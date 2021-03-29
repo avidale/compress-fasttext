@@ -1,7 +1,16 @@
 # Compress-fastText
 This Python 3 package allows to compress fastText word embedding models 
 (from the `gensim` package) by orders of magnitude, 
-without seriously affecting their quality. It can be installed with `pip`:
+without seriously affecting their quality. 
+
+**Note: gensim==4.0.0 has introduced some backward-incompatible changes:**
+* With gensim<4.0.0, please use compress-fasttext<=0.0.7 
+(and optionally Russian models from [our first release](https://github.com/avidale/compress-fasttext/releases/tag/v0.0.1)).
+* With gensim>=4.0.0, please use compress-fasttext>=0.1.0
+(and optionally Russian or English models from [our 0.1.0 release](https://github.com/avidale/compress-fasttext/releases/tag/v0.1.0)).
+
+
+The package can be installed with `pip`:
 ```commandline
 pip install compress-fasttext[full]
 ```

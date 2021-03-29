@@ -4,7 +4,7 @@ import numpy as np
 
 from collections import defaultdict
 from copy import deepcopy
-from gensim.models.utils_any2vec import ft_ngram_hashes
+from .utils import ft_ngram_hashes
 
 
 def count_buckets(ft, words, new_ngrams_size):

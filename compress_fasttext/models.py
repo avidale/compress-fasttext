@@ -1,7 +1,7 @@
 import numpy as np
 
-from gensim.models.keyedvectors import FastTextKeyedVectors
-from gensim.models.utils_any2vec import ft_ngram_hashes
+from gensim.models.fasttext import FastTextKeyedVectors
+from .utils import ft_ngram_hashes
 
 
 from compress_fasttext.compress import make_new_fasttext_model
@@ -32,6 +32,7 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
         )
 
     def update_index2word(self):
+        # todo: use the new GenSim https://github.com/RaRe-Technologies/gensim/wiki/Migrating-from-Gensim-3.x-to-4
         if not self.index2word:
             inverse_index = {value.index: key for key, value in self.vocab.items()}
             self.index2word = [inverse_index.get(i) for i in range(len(self.vocab))]

@@ -3,6 +3,11 @@ import sys
 from types import ModuleType, FunctionType
 from gc import get_referents
 
+try:
+    from gensim.models.utils_any2vec import ft_ngram_hashes
+except ImportError:
+    from gensim.models.fasttext import ft_ngram_hashes
+
 # Custom objects know their class.
 # Function objects seem to know way too much, including modules.
 # Exclude modules as well.

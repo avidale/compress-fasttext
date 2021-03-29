@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="compress-fasttext",
-    version="0.0.7",
+    version="0.1.0",
     author="David Dale",
     author_email="dale.david@mail.ru",
     description="A set of tools to compress gensim fasttext models",
@@ -21,7 +21,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'gensim<=3.8.3',
+        'gensim>=4.0.0',
         'numpy',
     ],
     extras_require={
