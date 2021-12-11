@@ -46,6 +46,7 @@ big_model = load_facebook_model('path-to-original-model').wv
 small_model = compress_fasttext.prune_ft_freq(big_model, pq=True)
 small_model.save('path-to-new-model')
 ```
+To perform this compression, you will need to `pip install gensim==3.8.3 pqkmeans` beforehand. 
 
 Different compression methods include:
 - matrix decomposition (`svd_ft`)
@@ -69,9 +70,28 @@ small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(
     'https://github.com/avidale/compress-fasttext/releases/download/gensim-4-draft/geowac_tokens_sg_300_5_2020-100K-20K-100.bin'
 )
 print(small_model['спасибо'])
+# [ 1.22736421e-01 -3.21375653e-01 ...  4.33826083e-01] # a 300-dimensional vector
+print(small_model.most_similar('котенок'))
+# [('щенок', 0.659467875957489), ('кот', 0.5826340913772583), ... ]
 ```
 The class `CompressedFastTextKeyedVectors` inherits from `gensim.models.fasttext.FastTextKeyedVectors`, 
 but makes a few additional optimizations.
+
+For English, you can use [this](https://github.com/avidale/compress-fasttext/releases/download/v0.0.4/cc.en.300.compressed.bin) tiny model, 
+obtained by compressing [the model by Facebook](https://fasttext.cc/docs/en/crawl-vectors.html).
+
+```python
+import compress_fasttext
+small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(
+    'https://github.com/avidale/compress-fasttext/releases/download/v0.0.4/cc.en.300.compressed.bin'
+)
+print(small_model['hello'])
+# [ 1.84736611e-01  6.32683930e-03  4.43901886e-03 ... -2.88431027e-02]  # a 300-dimensional vector
+print(small_model.most_similar('Python'))
+# [('PHP', 0.5252903699874878), ('.NET', 0.5027452707290649), ('Java', 0.4897131323814392),  ... ]
+```
+
+More compressed models for 101 various languages can be found at https://zenodo.org/record/4905385. 
 
 ### Notes
 This code is heavily based on the [navec](https://github.com/natasha/navec) package by Alexander Kukushkin and 
