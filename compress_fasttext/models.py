@@ -23,19 +23,19 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
     @classmethod
     def load(cls, *args, **kwargs):
         loaded = super(CompressedFastTextKeyedVectors, cls).load(*args, **kwargs)
+        # print(loaded.__dict__)
         return make_new_fasttext_model(
             loaded,
             new_vectors=loaded.vectors,
             new_vectors_ngrams=loaded.vectors_ngrams,
-            new_vocab=loaded.vocab,
+            new_vocab=loaded.key_to_index,
             cls=cls,
         )
 
     def update_index2word(self):
-        # todo: use the new GenSim https://github.com/RaRe-Technologies/gensim/wiki/Migrating-from-Gensim-3.x-to-4
-        if not self.index2word:
-            inverse_index = {value.index: key for key, value in self.vocab.items()}
-            self.index2word = [inverse_index.get(i) for i in range(len(self.vocab))]
+        if not self.index_to_key:
+            inverse_index = {value: key for key, value in self.key_to_index.items()}
+            self.index_to_key = [inverse_index.get(i) for i in range(len(self.key_to_index))]
 
     def word_vec(self, word, use_norm=False):
         """Get `word` representations in vector space, as a 1D numpy array.
@@ -64,7 +64,7 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
             raise KeyError('cannot calculate vector for OOV word without ngrams')
         else:
             word_vec = np.zeros(self.vectors_ngrams.shape[1], dtype=np.float32)
-            ngram_hashes = ft_ngram_hashes(word, self.min_n, self.max_n, self.bucket, self.compatible_hash)
+            ngram_hashes = ft_ngram_hashes(word=word, minn=self.min_n, maxn=self.max_n, num_buckets=self.bucket)
             if len(ngram_hashes) == 0:
                 return word_vec
             for nh in ngram_hashes:
@@ -73,6 +73,18 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
             if use_norm:
                 result /= np.sqrt(max(sum(result ** 2), EPSILON))
             return result
+
+    def fill_norms(self, force=False):
+        """
+        Ensure per-vector norms are available.
+
+        Any code which modifies vectors should ensure the accompanying norms are
+        either recalculated or 'None', to trigger a full recalculation later on-request.
+
+        """
+        if self.norms is None or force:
+            # self.norms = np.linalg.norm(self.vectors, axis=1)
+            self.norms = np.stack([sum(self.vectors[i]**2) ** 0.5 for i in range(len(self.vectors))])
 
     def init_sims(self, replace=False):
         """Precompute L2-normalized vectors.

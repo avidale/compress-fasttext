@@ -11,9 +11,8 @@ def count_buckets(ft, words, new_ngrams_size):
     new_to_old_buckets = defaultdict(set)
     old_hash_count = defaultdict(int)
     for word in words:
-        old_hashes = ft_ngram_hashes(word, ft.min_n, ft.max_n, ft.bucket, fb_compatible=ft.compatible_hash)
-        new_hashes = ft_ngram_hashes(word, ft.min_n, ft.max_n, new_ngrams_size, fb_compatible=ft.compatible_hash)
-
+        old_hashes = ft_ngram_hashes(word=word, minn=ft.min_n, maxn=ft.max_n, num_buckets=ft.bucket)
+        new_hashes = ft_ngram_hashes(word=word, minn=ft.min_n, maxn=ft.max_n, num_buckets=new_ngrams_size)
         for old_hash in old_hashes:
             old_hash_count[old_hash] += 1  # calculate frequency of ngrams for proper weighting
 
@@ -32,7 +31,9 @@ def fasttext_like_init(n, dim=300, random_state=42):
 
 def prune_ngrams(ft, new_ngrams_size, random_state=42):
     """ Reduce the size of fasttext ngrams matrix by collapsing some hashes together """
-    new_to_old_buckets, old_hash_count = count_buckets(ft, ft.vocab.keys(), new_ngrams_size)
+    new_to_old_buckets, old_hash_count = count_buckets(
+        ft, ft.vocab.keys(), new_ngrams_size
+    )
 
     # initialize new buckets just like in fasttext
     new_ngrams = fasttext_like_init(n=new_ngrams_size, dim=ft.vectors_ngrams.shape[1], random_state=random_state)
