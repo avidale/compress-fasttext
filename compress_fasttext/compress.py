@@ -93,7 +93,7 @@ def prune_ft_freq(
     )
     logger.info('old ngrams in use: {}'.format(len(old_hash_count)))
     id_and_count = sorted(old_hash_count.items(), key=lambda x: scorer(*x), reverse=True)
-    ids = [x[0] for x in id_and_count[:new_ngrams_size]]  # todo: adapt for the case of chaning hash function
+    ids = [x[0] for x in id_and_count[:new_ngrams_size]]
     top_ngram_vecs = ft.vectors_ngrams[ids]
     if pq and len(top_ngram_vecs) > 0:
         top_ngram_vecs = quantize(top_ngram_vecs, qdim=qdim, centroids=centroids)
