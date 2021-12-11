@@ -32,7 +32,7 @@ def fasttext_like_init(n, dim=300, random_state=42):
 def prune_ngrams(ft, new_ngrams_size, random_state=42):
     """ Reduce the size of fasttext ngrams matrix by collapsing some hashes together """
     new_to_old_buckets, old_hash_count = count_buckets(
-        ft, ft.vocab.keys(), new_ngrams_size
+        ft, ft.key_to_index.keys(), new_ngrams_size
     )
 
     # initialize new buckets just like in fasttext
@@ -51,12 +51,11 @@ def prune_ngrams(ft, new_ngrams_size, random_state=42):
 
 
 def prune_vocab(ft, new_vocab_size=1_000):
-    sorted_vocab = sorted(ft.vocab.items(), key=lambda x: x[1].count, reverse=True)
+    sorted_vocab = sorted(ft.key_to_index.items(), key=lambda x: ft.get_vecattr(x[0], 'count'), reverse=True)
     top_vocab_list = deepcopy(sorted_vocab[:new_vocab_size])
     top_vector_ids = []
-    for new_index, (word, vocab_item) in enumerate(top_vocab_list):
-        top_vector_ids.append(vocab_item.index)
-        vocab_item.index = new_index
+    for new_index, (word, idx) in enumerate(top_vocab_list):
+        top_vector_ids.append(idx)
     top_vectors = ft.vectors[top_vector_ids, :]
     return dict(top_vocab_list), top_vectors
 

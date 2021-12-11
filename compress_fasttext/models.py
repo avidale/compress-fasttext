@@ -58,7 +58,7 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
             If word and all ngrams not in vocabulary.
 
         """
-        if word in self.vocab:
+        if word in self.key_to_index:
             return super(FastTextKeyedVectors, self).word_vec(word, use_norm)
         elif self.bucket == 0:
             raise KeyError('cannot calculate vector for OOV word without ngrams')

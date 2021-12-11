@@ -89,7 +89,7 @@ def prune_ft_freq(
 
     logger.info('quantizing ngrams...')
     new_to_old_buckets, old_hash_count = count_buckets(
-        ft, list(ft.vocab.keys()), new_ngrams_size=new_ngrams_size,
+        ft, list(ft.key_to_index.keys()), new_ngrams_size=new_ngrams_size,
     )
     logger.info('old ngrams in use: {}'.format(len(old_hash_count)))
     id_and_count = sorted(old_hash_count.items(), key=lambda x: scorer(*x), reverse=True)
