@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 
 from gensim.models.fasttext import FastTextKeyedVectors
 from .utils import ft_ngram_hashes
@@ -22,7 +23,15 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
 
     @classmethod
     def load(cls, *args, **kwargs):
-        loaded = super(CompressedFastTextKeyedVectors, cls).load(*args, **kwargs)
+        try:
+            loaded = super(CompressedFastTextKeyedVectors, cls).load(*args, **kwargs)
+        except Exception as e:
+            warnings.warn(
+                'You seem to be loading an old model (compressed with gensim<4.0.0, compress-fasttext<0.1.0) '
+                'within an new environment (gensim>=4.0.0, compress-fasttext>=0.1.0), which may not work. '
+                'Please downgrade the packages or re-compress the model within the new environment.'
+            )
+            raise e
         # print(loaded.__dict__)
         return make_new_fasttext_model(
             loaded,
