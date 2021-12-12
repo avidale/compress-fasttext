@@ -15,27 +15,24 @@ def make_new_fasttext_model(
         new_vectors,
         new_vectors_ngrams,
         new_vocab=None,
-        add_index2entity=True,
         cls=None,
 ):
-    cls = cls or gensim.models.keyedvectors.FastTextKeyedVectors
+    cls = cls or gensim.models.fasttext.FastTextKeyedVectors
     new_ft = cls(
         vector_size=ft.vector_size,
         min_n=ft.min_n,
         max_n=ft.max_n,
         bucket=new_vectors_ngrams.shape[0],
-        compatible_hash=ft.compatible_hash
     )
     new_ft.vectors_vocab = None  # if we don't fine tune the model we don't need these vectors
     new_ft.vectors = new_vectors  # quantized vectors top_vectors
     if new_vocab is None:
-        new_ft.vocab = ft.vocab
+        new_ft.key_to_index = ft.key_to_index
     else:
-        new_ft.vocab = new_vocab
+        new_ft.key_to_index = new_vocab
     new_ft.vectors_ngrams = new_vectors_ngrams
-    if add_index2entity:  # this is required for methods such as most_similar()
-        inverse_index = {value.index: key for key, value in new_ft.vocab.items()}
-        new_ft.index2entity = [inverse_index.get(i) for i in range(len(new_ft.vocab))]
+    if hasattr(new_ft, 'update_index2word'):
+        new_ft.update_index2word()
     return new_ft
 
 
@@ -82,8 +79,8 @@ def prune_ft_freq(
         qdim=100,
         centroids=255,
         prune_by_norm=True,
-        norm_power=1):
-
+        norm_power=1,
+):
     if prune_by_norm:
         ngram_norms = np.linalg.norm(ft.vectors_ngrams, axis=-1)
         scorer = lambda id, count: count * (ngram_norms[id] ** norm_power)
@@ -91,7 +88,9 @@ def prune_ft_freq(
         scorer = lambda id, count: count
 
     logger.info('quantizing ngrams...')
-    new_to_old_buckets, old_hash_count = count_buckets(ft, list(ft.vocab.keys()), new_ngrams_size=new_ngrams_size)
+    new_to_old_buckets, old_hash_count = count_buckets(
+        ft, list(ft.key_to_index.keys()), new_ngrams_size=new_ngrams_size,
+    )
     logger.info('old ngrams in use: {}'.format(len(old_hash_count)))
     id_and_count = sorted(old_hash_count.items(), key=lambda x: scorer(*x), reverse=True)
     ids = [x[0] for x in id_and_count[:new_ngrams_size]]

@@ -73,7 +73,10 @@ class PQ(Record):
     def __getitem__(self, id):
         indexes = self.indexes[id]
         parts = self.codes[self.qdims, indexes]
-        return parts.reshape(self.dim)
+        if len(parts.shape) == 2:
+            return parts.reshape(self.dim)
+        else:  # the index has been list or slice
+            return parts.reshape(parts.shape[0], self.dim)
 
     def __add__(self, other):
         return self.unpack() + other
@@ -130,3 +133,6 @@ class PQ(Record):
     @classmethod
     def index_type(cls, centroids):
         return np.uint8 if centroids <= 255 else np.uint16
+
+    def __len__(self):
+        return self.vectors

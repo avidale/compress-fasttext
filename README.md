@@ -1,7 +1,20 @@
 # Compress-fastText
 This Python 3 package allows to compress fastText word embedding models 
 (from the `gensim` package) by orders of magnitude, 
-without seriously affecting their quality. It can be installed with `pip`:
+without significantly affecting their quality. 
+
+**Note: gensim==4.0.0 has introduced some backward-incompatible changes:**
+* With gensim<4.0.0, please use compress-fasttext<=0.0.7 
+(and optionally Russian models from [our first release](https://github.com/avidale/compress-fasttext/releases/tag/v0.0.1)).
+* With gensim>=4.0.0, please use compress-fasttext>=0.1.0
+(and optionally Russian or English models from [our 0.1.0 release](https://github.com/avidale/compress-fasttext/releases/tag/v0.1.0)).
+* Some models are no longer supported in the new version of gensim+compress-fasttext 
+  (for example, multiple models from [RusVectores](https://rusvectores.org/ru/models/) that use `compatible_hash=False`). 
+* For any particular model, compatibility should be determined experimentally. 
+  If you notice any strange behaviour, please report in the Github issues.
+
+
+The package can be installed with `pip`:
 ```commandline
 pip install compress-fasttext[full]
 ```
@@ -48,22 +61,24 @@ The recommended approach is combination of feature selection and quantization (`
 
 ### Model usage
 If you just need a tiny fastText model for Russian, you can download 
-[this](https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin)
-28-megabyte model. It's a compressed version of 
-[ruscorpora_none_fasttextskipgram_300_2_2019](http://vectors.nlpl.eu/repository/20/181.zip) model
+[this](https://github.com/avidale/compress-fasttext/releases/download/gensim-4-draft/geowac_tokens_sg_300_5_2020-100K-20K-100.bin)
+21-megabyte model. It's a compressed version of 
+[geowac_tokens_none_fasttextskipgram_300_5_2020](http://vectors.nlpl.eu/repository/20/214.zip) model
 from [RusVectores](https://rusvectores.org/ru/models/).
 
 If `compress-fasttext` is already installed, you can download and use this tiny model
 ```python
 import compress_fasttext
 small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(
-    'https://github.com/avidale/compress-fasttext/releases/download/v0.0.1/ft_freqprune_100K_20K_pq_100.bin'
+    'https://github.com/avidale/compress-fasttext/releases/download/gensim-4-draft/geowac_tokens_sg_300_5_2020-100K-20K-100.bin'
 )
 print(small_model['спасибо'])
-# [ 1.22736421e-01 -3.21375653e-01 ...  4.33826083e-01] # a 300-dimensional vector
+# [ 0.26762889  0.35489027 ...  -0.06149674] # a 300-dimensional vector
 print(small_model.most_similar('котенок'))
-# [('щенок', 0.659467875957489), ('кот', 0.5826340913772583), ... ]
+# [('кот', 0.7391024827957153), ('пес', 0.7388300895690918), ('малыш', 0.7280327081680298), ... ]
 ```
+The class `CompressedFastTextKeyedVectors` inherits from `gensim.models.fasttext.FastTextKeyedVectors`, 
+but makes a few additional optimizations.
 
 For English, you can use [this](https://github.com/avidale/compress-fasttext/releases/download/v0.0.4/cc.en.300.compressed.bin) tiny model, 
 obtained by compressing [the model by Facebook](https://fasttext.cc/docs/en/crawl-vectors.html).
