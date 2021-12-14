@@ -2,6 +2,7 @@ from typing import List
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
+from compress_fasttext.models import CompressedFastTextKeyedVectors
 
 
 def tokenize(text) -> List[str]:
@@ -12,6 +13,8 @@ def tokenize(text) -> List[str]:
 class FastTextTransformer(BaseEstimator, TransformerMixin):
     """ Convert texts into their mean fastText vectors """
     def __init__(self, model, tokenizer=tokenize, normalize=True):
+        if isinstance(model, str):
+            model = CompressedFastTextKeyedVectors.load(model)
         self.model = model
         self.tokenizer = tokenizer
         self.normalize = normalize
