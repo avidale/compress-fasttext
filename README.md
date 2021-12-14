@@ -3,6 +3,12 @@ This Python 3 package allows to compress fastText word embedding models
 (from the `gensim` package) by orders of magnitude, 
 without significantly affecting their quality. 
 
+This [blogpost in Russian](https://habr.com/ru/post/489474) 
+and [this one in English](https://towardsdatascience.com/eb212e9919ca)
+give more details about the motivation and 
+methods for compressing fastText models.
+
+
 **Note: gensim==4.0.0 has introduced some backward-incompatible changes:**
 * With gensim<4.0.0, please use compress-fasttext<=0.0.7 
 (and optionally Russian models from [our first release](https://github.com/avidale/compress-fasttext/releases/tag/v0.0.1)).
@@ -23,10 +29,6 @@ If you are not going to perform matrix decomposition or quantization,
 ```commandline
 pip install compress-fasttext
 ```
-
-
-This [blogpost](https://habr.com/ru/post/489474) (in Russian) gives more details about the motivation and 
-methods for compressing fastText models.
 
 ### Model compression
 You can use this package to compress your own fastText model (or one downloaded e.g. from 
@@ -95,6 +97,35 @@ print(small_model.most_similar('Python'))
 ```
 
 More compressed models for 101 various languages can be found at https://zenodo.org/record/4905385. 
+
+### Example of application
+
+In practical applications, you usually feed fastText embeddings to some other model.
+The class `FastTextTransformer` uses [the scikit-learn interface](https://scikit-learn.org/stable/data_transforms.html)
+and represents a text as the average of the embedding of its words.
+With it you can, for example, train a classifier on top of fastText 
+to tell edible things from inedible ones:
+
+```python
+import compress_fasttext
+from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import LogisticRegression
+from compress_fasttext.feature_extraction import FastTextTransformer
+
+small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(
+    'https://github.com/avidale/compress-fasttext/releases/download/v0.0.4/cc.en.300.compressed.bin'
+)
+
+classifier = make_pipeline(
+    FastTextTransformer(model=small_model), 
+    LogisticRegression()
+).fit(
+    ['banana', 'soup', 'burger', 'car', 'tree', 'city'],
+    [1, 1, 1, 0, 0, 0]
+)
+classifier.predict(['jet', 'train', 'cake', 'apple'])
+# array([0, 0, 1, 1])
+```
 
 ### Notes
 This code is heavily based on the [navec](https://github.com/natasha/navec) package by Alexander Kukushkin and 
