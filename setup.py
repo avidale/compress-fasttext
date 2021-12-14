@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="compress-fasttext",
-    version="0.1.0",
+    version="0.1.1",
     author="David Dale",
     author_email="dale.david@mail.ru",
     description="A set of tools to compress gensim fasttext models",
