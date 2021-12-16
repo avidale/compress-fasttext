@@ -17,7 +17,10 @@ def make_new_fasttext_model(
         new_vocab=None,
         cls=None,
 ):
-    cls = cls or gensim.models.fasttext.FastTextKeyedVectors
+    from .models import CompressedFastTextKeyedVectors  # todo: fix circular import
+    cls = cls or CompressedFastTextKeyedVectors
+    # let the model be the ultimate type before saving+loading it
+    # cls = cls or gensim.models.fasttext.FastTextKeyedVectors
     new_ft = cls(
         vector_size=ft.vector_size,
         min_n=ft.min_n,
@@ -83,9 +86,12 @@ def prune_ft_freq(
 ):
     if prune_by_norm:
         ngram_norms = np.linalg.norm(ft.vectors_ngrams, axis=-1)
-        scorer = lambda id, count: count * (ngram_norms[id] ** norm_power)
+
+        def scorer(id, count):
+            return count * (ngram_norms[id] ** norm_power)
     else:
-        scorer = lambda id, count: count
+        def scorer(id, count):
+            return count
 
     logger.info('quantizing ngrams...')
     new_to_old_buckets, old_hash_count = count_buckets(

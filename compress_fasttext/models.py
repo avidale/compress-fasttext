@@ -107,3 +107,14 @@ class CompressedFastTextKeyedVectors(FastTextKeyedVectors):
         # todo: make self.vectors_norm a view over self.vectors, to avoid decompression
         # do NOT calculate vectors_ngrams_norm; using them is a mistake
         self.vectors_ngrams_norm = None
+
+    def adjust_vectors(self):
+        # do not need adjusting vectors, because `vectors` instead of `vectors_vocab` are saved
+        pass
+
+    def _save_specials(self, fname, separately, sep_limit, ignore, pickle_protocol, compress, subname):
+        """Arrange any special handling for the gensim.utils.SaveLoad protocol"""
+        # don't ignore `vectors`, because they should be saved instead of `vectors_vocab`
+        ignore = set(ignore).union(['buckets_word', ])
+        return super(FastTextKeyedVectors, self)._save_specials(
+            fname, separately, sep_limit, ignore, pickle_protocol, compress, subname)
