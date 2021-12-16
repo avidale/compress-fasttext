@@ -3,6 +3,9 @@ import gensim
 import pytest
 
 import compress_fasttext
+from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import LogisticRegression
+from compress_fasttext.feature_extraction import FastTextTransformer
 
 BIG_MODEL_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/test_data/ft_leipzig_ru_mini.bin')
 BASE_MODEL_URL = 'https://github.com/avidale/compress-fasttext/releases/download/'
@@ -47,3 +50,17 @@ def test_loading_existing_models(word1, word2, model_name):
     ft = compress_fasttext.models.CompressedFastTextKeyedVectors.load(BASE_MODEL_URL + model_name)
     out = ft.most_similar(word1)
     assert word2 in {w for w, sim in out}
+
+
+def test_sklearn_wrapper():
+    small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(
+        'https://github.com/avidale/compress-fasttext/releases/download/v0.0.4/cc.en.300.compressed.bin'
+    )
+    classifier = make_pipeline(
+        FastTextTransformer(model=small_model),
+        LogisticRegression()
+    ).fit(
+        ['banana', 'soup', 'burger', 'car', 'tree', 'city'],
+        [1, 1, 1, 0, 0, 0]
+    )
+    assert (classifier.predict(['jet', 'train', 'cake', 'apple']) == [0, 0, 1, 1]).all()
