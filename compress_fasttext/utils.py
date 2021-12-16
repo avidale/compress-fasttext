@@ -17,7 +17,7 @@ BLACKLIST = type, ModuleType, FunctionType
 def getsize(obj):
     """ sum size of object & members. """
     if isinstance(obj, BLACKLIST):
-        raise TypeError('getsize() does not take argument of type: '+ str(type(obj)))
+        raise TypeError('getsize() does not take argument of type: ' + str(type(obj)))
     seen_ids = set()
     size = 0
     objects = [obj]

@@ -28,3 +28,6 @@ class DecomposedMatrix:
         if fp16:
             compressed = compressed.astype(np.float16)
         return cls(compressed, model.components_)
+
+    def __len__(self):
+        return len(self.compressed)

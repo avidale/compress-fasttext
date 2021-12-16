@@ -22,7 +22,7 @@ def vocabulary_from_files(path):
 def cosine(x, y, eps=1e-10):
     x = x.astype(np.float32)
     y = y.astype(np.float32)
-    den = (np.dot(x,x) * np.dot(y,y))**0.5
+    den = (np.dot(x, x) * np.dot(y, y))**0.5
     return np.dot(x, y) / (den + eps)
 
 
