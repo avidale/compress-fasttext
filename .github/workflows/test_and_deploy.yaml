@@ -17,6 +17,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pycodestyle pytest scikit-learn pqkmeans
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        python setup.py develop
     - name: Lint with flake8
       run: |
         pycodestyle  . --max-line-length=127
