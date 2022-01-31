@@ -13,7 +13,7 @@ methods for compressing fastText models.
 * With gensim<4.0.0, please use compress-fasttext<=0.0.7 
 (and optionally Russian models from [our first release](https://github.com/avidale/compress-fasttext/releases/tag/v0.0.1)).
 * With gensim>=4.0.0, please use compress-fasttext>=0.1.0
-(and optionally Russian or English models from [our 0.1.0 release](https://github.com/avidale/compress-fasttext/releases/tag/v0.1.0)).
+(and optionally Russian or English models from [our 0.1.0 release](https://github.com/avidale/compress-fasttext/releases/tag/gensim-4-draft)).
 * Some models are no longer supported in the new version of gensim+compress-fasttext 
   (for example, multiple models from [RusVectores](https://rusvectores.org/ru/models/) that use `compatible_hash=False`). 
 * For any particular model, compatibility should be determined experimentally. 
