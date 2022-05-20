@@ -19,6 +19,10 @@ class DecomposedMatrix:
     def shape(self):
         return self.compressed.shape[0], self.components.shape[1]
 
+    @property
+    def dtype(self):
+        return self.components.dtype
+
     @classmethod
     def compress(cls, data, n_components=30, fp16=True):
         if not TruncatedSVD:
