@@ -62,6 +62,14 @@ class PQ(Record):
     __attributes__ = ['vectors', 'dim', 'qdim', 'centroids', 'indexes', 'codes']
 
     def __init__(self, vectors, dim, qdim, centroids, indexes, codes):
+        """
+        :param vectors: number of rows
+        :param dim: dimensionality of decompressed vectors
+        :param qdim: dimensionality of compressed vectors
+        :param centroids: number of centroids
+        :param indexes: compressed vectors
+        :param codes: code words of the PQ index
+        """
         self.vectors = vectors
         self.dim = dim
         self.qdim = qdim
@@ -111,6 +119,10 @@ class PQ(Record):
     @property
     def shape(self):
         return self.vectors, self.dim
+
+    @property
+    def dtype(self):
+        return self.codes.dtype
 
     @property
     def as_bytes(self):
