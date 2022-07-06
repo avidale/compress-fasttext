@@ -3,6 +3,8 @@ This Python 3 package allows to compress fastText word embedding models
 (from the `gensim` package) by orders of magnitude, 
 without significantly affecting their quality. 
 
+[Here](https://github.com/avidale/compress-fasttext/releases/tag/gensim-4-draft) are some links to the models that have already been compressed.
+
 This [blogpost in Russian](https://habr.com/ru/post/489474) 
 and [this one in English](https://towardsdatascience.com/eb212e9919ca)
 give more details about the motivation and 
