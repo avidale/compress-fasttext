@@ -2,3 +2,4 @@ gensim>=4.0.0
 numpy
 pqkmeans
 scikit-learn
+torch
