@@ -53,7 +53,7 @@ big_model = load_facebook_model('path-to-original-model').wv
 small_model = compress_fasttext.prune_ft_freq(big_model, pq=True)
 small_model.save('path-to-new-model')
 ```
-To perform this compression, you will need to `pip install gensim==3.8.3 pqkmeans` beforehand. 
+To perform this compression, you will need to `pip install gensim==3.8.3 sklearn` beforehand. 
 
 Different compression methods include:
 - matrix decomposition (`svd_ft`)
